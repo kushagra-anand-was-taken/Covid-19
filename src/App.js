@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import Chart from "./components/Chart/Chart";
+import Cards from "./components/Cards/Cards";
+import CountryPicker from "./components/CountryPicker/CountryPicker";
+import FetchData from "./api/index";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
+import "./App.css";
+
+class App extends Component {
+  state = {
+    data: {},
+    country: "",
+  };
+  async componentDidMount() {
+    const data = await FetchData();
+
+    this.setState({ data: data });
+  }
+
+  handleCountryChange = async (country) => {
+    const data = await FetchData(country);
+
+    this.setState({ data: data, country: country });
+  };
+  render() {
+    return (
+      <div className="container ">
+        <Cards data={this.state.data}></Cards>
+        <CountryPicker
+          handleCountryChange={this.handleCountryChange}
+        ></CountryPicker>
+        <Chart data={this.state.data} country={this.state.country}></Chart>
+        <p className="copy">
+          <strong>Copyright © 2020-Till Death Kushagra's Ltd.</strong>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+      </div>
+    );
+  }
 }
 
 export default App;
